@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="About Kiersten Ong - UI/UX Designer & Game Developer">
+    <title>About Me | Kiersten Ong</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700;1,9..144,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="site-header">
+        <nav class="main-nav" aria-label="Main navigation">
+            <a href="index.html" class="logo">Kiersten Ong</a>
+            <ul class="nav-links">
+                <li><a href="about.html">About</a></li>
+                <li><a href="projects.html">Projects</a></li>
+                <li><a href="skills.html">Skills</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+            <button class="mobile-menu-btn" aria-label="Toggle menu" aria-expanded="false">
+                <span class="hamburger"></span>
+                <span class="hamburger"></span>
+                <span class="hamburger"></span>
+            </button>
+        </nav>
+    </header>
+
+    <main>
+        <section id="about" class="about page-section">
+            <div class="page-visual"><img src="Images&CV/BobAboutMe.png" alt="" class="page-image"></div>
+            <h2 class="section-title">About Me</h2>
+            <div class="about-content">
+                <div class="about-text">
+                    <p>I'm a creative professional passionate about the intersection of design and technology. With expertise in both UI/UX design and game development, I craft intuitive interfaces and immersive digital experiences that users love.</p>
+                    <p>My approach combines user-centered design thinking with technical implementation—whether it's prototyping in Figma or building games in Unity, I strive to create work that's both beautiful and functional.</p>
+                </div>
+                <div class="about-actions">
+                    <a href="Images&CV/CV.pdf" class="btn btn-primary" download>Download CV</a>
+                    <a href="https://www.artstation.com/kiers" class="btn btn-secondary" target="_blank" rel="noopener noreferrer">View Artstation</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <p>&copy; <span id="year"></span> Kiersten Ong. All rights reserved.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
