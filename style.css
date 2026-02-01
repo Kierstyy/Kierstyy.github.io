@@ -24,7 +24,7 @@
     --color-accent-hover: #a78bfa;
     --color-accent-solid: #b8a9e8;
     --color-border: #e7e5e4;
-    --font-body: 'Comic Sans MS', cursive, sans-serif;
+    --font-body: 'Comic Sans MS', 'Comic Neue', cursive, sans-serif;
     --font-display: 'Chicken Pie', 'Fraunces', Georgia, serif;
     --max-width: 1120px;
     --section-padding: 5rem 1.5rem;
