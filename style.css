@@ -98,6 +98,13 @@ ul {
     font-size: 1.25rem;
 }
 
+/* Small KO logo used in header links */
+.site-logo {
+    width: 40px;
+    height: auto;
+    display: block;
+}
+
 .logo:hover {
     color: var(--color-accent);
 }
@@ -147,6 +154,13 @@ ul {
     text-transform: uppercase;
     letter-spacing: 0.1em;
     margin-bottom: 0.5rem;
+}
+
+/* Hero name image sizing (replaces text title) */
+.hero-name-image {
+    width: clamp(200px, 30vw, 420px);
+    height: auto;
+    margin-bottom: 1rem;
 }
 
 .hero-title {
