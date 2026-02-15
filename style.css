@@ -100,9 +100,10 @@ ul {
 
 /* Small KO logo used in header links */
 .site-logo {
-    height: 432px;
-    width: auto;
-    display: block;
+    height: 432px !important;
+    width: auto !important;
+    max-width: none !important;
+    display: block !important;
 }
 
 .logo:hover {
