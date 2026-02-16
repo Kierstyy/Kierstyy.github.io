@@ -86,11 +86,50 @@
         .nav-links a {
             color: inherit;
             text-decoration: none;
-            transition: color 0.2s ease;
+            transition: color var(--transition), opacity var(--transition);
         }
 
         .nav-links a:hover {
             color: var(--color-accent);
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
+        .hamburger {
+            width: 24px;
+            height: 2px;
+            background: var(--color-text);
+            transition: var(--transition);
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .nav-links.active {
+                display: flex;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                flex-direction: column;
+                background: var(--color-bg);
+                padding: 2rem;
+                border-bottom: 1px solid var(--color-border);
+            }
+
+            .mobile-menu-btn {
+                display: flex;
+            }
         }
 
         .game-page-wrapper {
@@ -196,7 +235,7 @@
 
         @media (max-width: 512px) {
             .game-page-wrapper {
-                padding-top: 60px;
+                padding-top: 70px;
             }
 
             h1 {
@@ -213,11 +252,6 @@
 
             .game-over p {
                 font-size: 1em;
-            }
-
-            .nav-links {
-                gap: 1rem;
-                font-size: 0.9em;
             }
         }
     </style>
@@ -243,7 +277,7 @@
 
     <div class="game-page-wrapper">
         <div class="game-container">
-            <h1>🏃 Bob's Adventure</h1>
+            <h1>Bob</h1>
             <canvas id="gameCanvas" width="800" height="400"></canvas>
             <div class="info">
                 <div class="score">Score: <span id="score">0</span> &nbsp; High: <span id="highScore">0</span></div>
@@ -687,7 +721,31 @@
             if (el) el.textContent = highScore;
             requestAnimationFrame(gameLoop);
         })();
+
+        // Mobile navigation toggle
+        function initMobileMenu() {
+            const menuBtn = document.querySelector('.mobile-menu-btn');
+            const navLinks = document.querySelector('.nav-links');
+
+            if (!menuBtn || !navLinks) return;
+
+            menuBtn.addEventListener('click', () => {
+                const isExpanded = menuBtn.getAttribute('aria-expanded') === 'true';
+                menuBtn.setAttribute('aria-expanded', !isExpanded);
+                navLinks.classList.toggle('active');
+            });
+
+            // Close menu when clicking a nav link
+            navLinks.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => {
+                    menuBtn.setAttribute('aria-expanded', 'false');
+                    navLinks.classList.remove('active');
+                });
+            });
+        }
+
+        // Initialize mobile menu on page load
+        window.addEventListener('DOMContentLoaded', initMobileMenu);
     </script>
-    <script src="script.js"></script>
 </body>
 </html>
