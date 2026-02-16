@@ -79,21 +79,7 @@
             color: var(--color-accent);
         }
 
-        .nav-links {
-            display: flex;
-            gap: 2rem;
-            list-style: none;
-        }
-
-        .nav-links a {
-            color: inherit;
-            text-decoration: none;
-            transition: color 0.2s ease;
-        }
-
-        .nav-links a:hover {
-            color: var(--color-accent);
-        }
+        /* Nav links styling comes from style.css to match site-wide header */
 
         .game-page-wrapper {
             display: flex;
@@ -223,17 +209,7 @@
             }
         }
 
-        /* Ensure mobile hamburger shows and works on this page */
-        @media (max-width: 768px) {
-            .mobile-menu-btn { display: flex !important; }
-            .hamburger {
-                width: 24px;
-                height: 2px;
-                background: var(--color-text);
-                display: block;
-            }
-            .nav-links.active { display: flex !important; }
-        }
+        /* mobile menu behavior is handled by style.css/script.js */
     </style>
 </head>
 <body>
