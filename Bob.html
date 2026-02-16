@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bob - Platformer Game</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700&display=swap" rel="stylesheet">
+    <style>
+        @font-face {
+            font-family: 'Chicken Pie';
+            src: url('Fonts/CHICKEN Pie.otf') format('opentype'),
+                 url('Fonts/CHICKEN Pie.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --color-bg: #fafaf9;
+            --color-accent: #c4b5fd;
+            --color-accent-hover: #a78bfa;
+            --color-border: #e7e5e4;
+            --font-body: 'Comic Sans MS', 'Comic Neue', cursive, sans-serif;
+            --font-display: 'Chicken Pie', 'Fraunces', Georgia, serif;
+            --max-width: 1120px;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background-color: var(--color-bg);
+            margin: 0;
+            padding: 0;
+        }
+
+        .site-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 200;
+            background: rgba(250, 250, 249, 0.95);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .main-nav {
+            position: relative;
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 1rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 1.25rem;
+        }
+
+        .site-logo {
+            height: 55px !important;
+            width: auto !important;
+            max-width: none !important;
+            display: block !important;
+        }
+
+        .logo:hover {
+            color: var(--color-accent);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: inherit;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--color-accent);
+        }
+
+        .game-page-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding-top: 80px;
+            background-color: var(--color-bg);
+        }
+
+        .game-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #1c1917;
+            font-size: 2em;
+            font-family: var(--font-display);
+            margin-bottom: 20px;
+        }
+
+        canvas {
+            border: 4px solid var(--color-accent);
+            background: linear-gradient(to bottom, #E8E0F8, #F5F0FF);
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(196, 181, 253, 0.2);
+            max-width: 100%;
+            height: auto;
+            touch-action: none;
+        }
+
+        .info {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 800px;
+            color: #1c1917;
+            font-size: 1.2em;
+        }
+
+        .score, .controls {
+            background: rgba(196, 181, 253, 0.2);
+            padding: 10px 20px;
+            border-radius: 5px;
+            border: 2px solid var(--color-accent);
+            font-weight: normal;
+        }
+
+        .game-over {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            color: #1c1917;
+            padding: 40px;
+            border-radius: 10px;
+            text-align: center;
+            z-index: 100;
+            display: none;
+            font-size: 1.5em;
+            border: 3px solid var(--color-accent);
+            box-shadow: 0 10px 40px rgba(196, 181, 253, 0.3);
+        }
+
+        .game-over h2 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            color: var(--color-accent);
+            font-family: var(--font-display);
+        }
+
+        .game-over p {
+            font-size: 1.2em;
+            margin: 10px 0;
+        }
+
+        .game-over button {
+            margin-top: 20px;
+            padding: 12px 30px;
+            font-size: 1.1em;
+            background: var(--color-accent);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+            font-family: var(--font-body);
+            font-weight: 600;
+        }
+
+        .game-over button:hover {
+            background: var(--color-accent-hover);
+        }
+
+        @media (max-width: 512px) {
+            .game-page-wrapper {
+                padding-top: 60px;
+            }
+
+            h1 {
+                font-size: 1.5em;
+            }
+
+            .info {
+                font-size: 1em;
+            }
+
+            .game-over h2 {
+                font-size: 2em;
+            }
+
+            .game-over p {
+                font-size: 1em;
+            }
+
+            .nav-links {
+                gap: 1rem;
+                font-size: 0.9em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="site-header">
+        <nav class="main-nav" aria-label="Main navigation">
+            <a href="index.html" class="logo"><img src="ImagesAndCV/KO.png" alt="KO logo" class="site-logo"></a>
+            <ul class="nav-links">
+                <li><a href="about.html">About</a></li>
+                <li><a href="projects.html">Projects</a></li>
+                <li><a href="skills.html">Skills</a></li>
+                <li><a href="contact.html">Contact</a></li>
+                <li><a href="Bob.html">Bob Game</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="game-page-wrapper">
+        <div class="game-container">
+            <h1>🏃 Bob's Adventure</h1>
+            <canvas id="gameCanvas" width="800" height="400"></canvas>
+            <div class="info">
+                <div class="score">Score: <span id="score">0</span></div>
+                <div class="controls">
+                    <span id="controlText">SPACE to Jump | Tap to Jump</span>
+                </div>
+            </div>
+            <div class="game-over" id="gameOverScreen">
+                <h2>GAME OVER</h2>
+                <p>Final Score: <span id="finalScore">0</span></p>
+                <button onclick="location.reload()">Play Again</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Responsive canvas sizing
+        function resizeCanvas() {
+            const container = canvas.parentElement;
+            const containerWidth = Math.min(container.clientWidth - 40, 800);
+            const ratio = canvas.width / canvas.height;
+            canvas.style.width = containerWidth + 'px';
+            canvas.style.height = (containerWidth / ratio) + 'px';
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        // Game variables
+        const GAME_WIDTH = 800;
+        const GAME_HEIGHT = 400;
+        const GROUND_LEVEL = 320;
+        const GRAVITY = 0.6;
+        const JUMP_STRENGTH = -15;
+
+        // Asset paths
+        const ASSETS = {
+            bobRun: 'BobStuff/BobRun.png',
+            ground: 'BobStuff/Ground.png',
+            juiceObstacle: 'BobStuff/JuiceObstacle.png',
+            donutObstacle: 'BobStuff/DonutObstacle.png',
+            bobCoin: 'BobStuff/BobCoin.png'
+        };
+
+        // Game state
+        let gameState = {
+            isRunning: true,
+            score: 0,
+            gameSpeed: 8,
+            difficultyTimer: 0
+        };
+
+        // Bob character
+        let bob = {
+            x: 100,
+            y: GROUND_LEVEL,
+            width: 50,
+            height: 50,
+            velocityY: 0,
+            isJumping: false,
+            isOnGround: true,
+            frameIndex: 0,
+            frameTimer: 0,
+            spriteWidth: 420,
+            spriteHeight: 420,
+            displayWidth: 80,
+            displayHeight: 80
+        };
+
+        // Images
+        let images = {
+            bobRun: null,
+            ground: null,
+            juiceObstacle: null,
+            donutObstacle: null,
+            bobCoin: null
+        };
+
+        // Load images
+        function loadImages() {
+            return new Promise((resolve) => {
+                let loadCount = 0;
+                const totalImages = Object.keys(ASSETS).length;
+                
+                Object.keys(ASSETS).forEach(key => {
+                    const img = new Image();
+                    img.onload = () => {
+                        images[key] = img;
+                        loadCount++;
+                        if (loadCount === totalImages) {
+                            resolve();
+                        }
+                    };
+                    img.onerror = () => {
+                        console.warn(`Failed to load image: ${ASSETS[key]}`);
+                        loadCount++;
+                        if (loadCount === totalImages) {
+                            resolve();
+                        }
+                    };
+                    img.src = ASSETS[key];
+                });
+            });
+        }
+
+        // Obstacles
+        let obstacles = [];
+
+        class Obstacle {
+            constructor(type) {
+                this.type = type;
+                this.x = GAME_WIDTH;
+                this.width = 60;
+                this.height = 60;
+                this.y = GROUND_LEVEL;
+                this.scored = false;
+            }
+
+            update() {
+                this.x -= gameState.gameSpeed;
+            }
+
+            draw() {
+                const img = this.type === 'juice' ? images.juiceObstacle : images.donutObstacle;
+                if (img && img.naturalWidth) {
+                    // Calculate aspect ratio to avoid stretching
+                    const aspectRatio = img.naturalWidth / img.naturalHeight;
+                    let drawWidth = this.width;
+                    let drawHeight = this.width / aspectRatio;
+                    if (drawHeight > this.height) {
+                        drawHeight = this.height;
+                        drawWidth = this.height * aspectRatio;
+                    }
+                    const offsetX = (this.width - drawWidth) / 2;
+                    ctx.drawImage(img, this.x + offsetX, this.y - drawHeight, drawWidth, drawHeight);
+                } else {
+                    ctx.fillStyle = this.type === 'juice' ? '#FF6B6B' : '#FFD93D';
+                    ctx.fillRect(this.x, this.y - this.height, this.width, this.height);
+                }
+            }
+
+            isOffScreen() {
+                return this.x + this.width < 0;
+            }
+
+            collidesWith(bob) {
+                return !(bob.x + bob.displayWidth < this.x ||
+                    bob.x > this.x + this.width ||
+                    bob.y < this.y - this.height ||
+                    bob.y - bob.displayHeight > this.y);
+            }
+        }
+
+        // Coins
+        let coins = [];
+
+        class Coin {
+            constructor() {
+                this.x = GAME_WIDTH;
+                this.y = GROUND_LEVEL - 100;
+                this.width = 30;
+                this.height = 30;
+                this.rotationAngle = 0;
+            }
+
+            update() {
+                this.x -= gameState.gameSpeed;
+                this.rotationAngle += 0.05;
+            }
+
+            draw() {
+                ctx.save();
+                ctx.translate(this.x + this.width / 2, this.y);
+                ctx.rotate(this.rotationAngle);
+                
+                if (images.bobCoin && images.bobCoin.naturalWidth) {
+                    ctx.drawImage(images.bobCoin, -this.width / 2, -this.height / 2, this.width, this.height);
+                } else {
+                    ctx.fillStyle = '#FFD700';
+                    ctx.beginPath();
+                    ctx.arc(0, 0, this.width / 2, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+                ctx.restore();
+            }
+
+            isOffScreen() {
+                return this.x + this.width < 0;
+            }
+
+            collidesWith(bob) {
+                const dx = this.x - (bob.x + bob.displayWidth / 2);
+                const dy = this.y - (bob.y - bob.displayHeight / 2);
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                return distance < this.width / 2 + bob.displayWidth / 2;
+            }
+        }
+
+        // Input handling
+        window.addEventListener('keydown', (e) => {
+            if (e.code === 'Space') {
+                e.preventDefault();
+                if (bob.isOnGround && gameState.isRunning) {
+                    bob.velocityY = JUMP_STRENGTH;
+                    bob.isJumping = true;
+                    bob.isOnGround = false;
+                }
+            }
+        });
+
+        canvas.addEventListener('touchstart', () => {
+            if (bob.isOnGround && gameState.isRunning) {
+                bob.velocityY = JUMP_STRENGTH;
+                bob.isJumping = true;
+                bob.isOnGround = false;
+            }
+        });
+
+        canvas.addEventListener('click', () => {
+            if (bob.isOnGround && gameState.isRunning) {
+                bob.velocityY = JUMP_STRENGTH;
+                bob.isJumping = true;
+                bob.isOnGround = false;
+            }
+        });
+
+        // Update Bob
+        function updateBob() {
+            bob.velocityY += GRAVITY;
+            bob.y += bob.velocityY;
+
+            if (bob.y >= GROUND_LEVEL) {
+                bob.y = GROUND_LEVEL;
+                bob.velocityY = 0;
+                bob.isJumping = false;
+                bob.isOnGround = true;
+            } else {
+                bob.isOnGround = false;
+            }
+
+            if (!bob.isJumping) {
+                bob.frameTimer++;
+                if (bob.frameTimer > 8) {
+                    bob.frameIndex = (bob.frameIndex + 1) % 2;
+                    bob.frameTimer = 0;
+                }
+            }
+        }
+
+        // Draw Bob
+        function drawBob() {
+            if (images.bobRun && images.bobRun.naturalWidth) {
+                let sourceX = bob.isJumping ? 420 : bob.frameIndex * 420;
+                ctx.drawImage(
+                    images.bobRun,
+                    sourceX, 0,
+                    bob.spriteWidth, bob.spriteHeight,
+                    bob.x, bob.y - bob.displayHeight,
+                    bob.displayWidth, bob.displayHeight
+                );
+            } else {
+                ctx.fillStyle = '#c4b5fd';
+                ctx.fillRect(bob.x, bob.y - bob.displayHeight, bob.displayWidth, bob.displayHeight);
+            }
+        }
+
+        // Draw ground
+        function drawGround() {
+            if (images.ground && images.ground.naturalWidth) {
+                const groundPattern = ctx.createPattern(images.ground, 'repeat-x');
+                ctx.fillStyle = groundPattern;
+            } else {
+                ctx.fillStyle = '#8B7355';
+            }
+            ctx.fillRect(0, GROUND_LEVEL, GAME_WIDTH, GAME_HEIGHT - GROUND_LEVEL);
+
+            ctx.strokeStyle = '#000000';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(0, GROUND_LEVEL);
+            ctx.lineTo(GAME_WIDTH, GROUND_LEVEL);
+            ctx.stroke();
+        }
+
+        // Spawn obstacles and coins
+        function spawnObstacle() {
+            const type = Math.random() > 0.5 ? 'juice' : 'donut';
+            obstacles.push(new Obstacle(type));
+        }
+
+        function spawnCoin() {
+            coins.push(new Coin());
+        }
+
+        // Update obstacles
+        function updateObstacles() {
+            for (let i = obstacles.length - 1; i >= 0; i--) {
+                obstacles[i].update();
+
+                if (obstacles[i].collidesWith(bob)) {
+                    endGame();
+                }
+
+                if (!obstacles[i].scored && obstacles[i].x < bob.x) {
+                    obstacles[i].scored = true;
+                    gameState.score += 10;
+                }
+
+                if (obstacles[i].isOffScreen()) {
+                    obstacles.splice(i, 1);
+                }
+            }
+        }
+
+        // Update coins
+        function updateCoins() {
+            for (let i = coins.length - 1; i >= 0; i--) {
+                coins[i].update();
+
+                if (coins[i].collidesWith(bob)) {
+                    gameState.score += 50;
+                    coins.splice(i, 1);
+                    continue;
+                }
+
+                if (coins[i].isOffScreen()) {
+                    coins.splice(i, 1);
+                }
+            }
+        }
+
+        // Draw all obstacles
+        function drawObstacles() {
+            obstacles.forEach(obstacle => obstacle.draw());
+        }
+
+        // Draw all coins
+        function drawCoins() {
+            coins.forEach(coin => coin.draw());
+        }
+
+        // Update score display
+        function updateScore() {
+            document.getElementById('score').textContent = gameState.score;
+        }
+
+        // Increase difficulty
+        function increaseDifficulty() {
+            gameState.difficultyTimer++;
+            if (gameState.difficultyTimer > 300) {
+                gameState.gameSpeed += 0.5;
+                gameState.difficultyTimer = 0;
+            }
+        }
+
+        // Spawn management
+        let spawnTimer = 0;
+        let coinSpawnTimer = 0;
+
+        function manageSpawning() {
+            spawnTimer++;
+            coinSpawnTimer++;
+
+            const spawnRate = Math.max(80, 200 - gameState.gameSpeed * 10);
+            const coinSpawnRate = Math.max(150, 350 - gameState.gameSpeed * 20);
+
+            if (spawnTimer > spawnRate) {
+                spawnObstacle();
+                spawnTimer = 0;
+            }
+
+            if (coinSpawnTimer > coinSpawnRate) {
+                spawnCoin();
+                coinSpawnTimer = 0;
+            }
+        }
+
+        // End game
+        function endGame() {
+            gameState.isRunning = false;
+            document.getElementById('finalScore').textContent = gameState.score;
+            document.getElementById('gameOverScreen').style.display = 'block';
+        }
+
+        // Game loop
+        function gameLoop() {
+            // Clear canvas
+            ctx.fillStyle = 'white';
+            ctx.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
+
+            if (gameState.isRunning) {
+                updateBob();
+                updateObstacles();
+                updateCoins();
+                manageSpawning();
+                increaseDifficulty();
+            }
+
+            drawGround();
+            drawCoins();
+            drawObstacles();
+            drawBob();
+            updateScore();
+
+            requestAnimationFrame(gameLoop);
+        }
+
+        // Initialize and start game
+        (async () => {
+            await loadImages();
+            gameLoop();
+        })();
+    </script>
+</body>
+</html>
