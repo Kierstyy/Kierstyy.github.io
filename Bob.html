@@ -7,7 +7,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
     <style>
         @font-face {
             font-family: 'Chicken Pie';
@@ -25,7 +24,6 @@
 
         :root {
             --color-bg: #fafaf9;
-            --color-text: #1c1917;
             --color-accent: #c4b5fd;
             --color-accent-hover: #a78bfa;
             --color-border: #e7e5e4;
@@ -41,7 +39,59 @@
             padding: 0;
         }
 
-        
+        .site-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 200;
+            background: rgba(250, 250, 249, 0.95);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .main-nav {
+            position: relative;
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 1rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 1.25rem;
+        }
+
+        .site-logo {
+            height: 55px !important;
+            width: auto !important;
+            max-width: none !important;
+            display: block !important;
+        }
+
+        .logo:hover {
+            color: var(--color-accent);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: inherit;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--color-accent);
+        }
 
         .game-page-wrapper {
             display: flex;
@@ -167,10 +217,9 @@
 
             .nav-links {
                 gap: 1rem;
+                font-size: 0.9em;
             }
         }
-
-        /* mobile menu behavior is handled by style.css/script.js */
     </style>
 </head>
 <body>
@@ -194,7 +243,7 @@
 
     <div class="game-page-wrapper">
         <div class="game-container">
-            <h1>Bob</h1>
+            <h1>🏃 Bob's Adventure</h1>
             <canvas id="gameCanvas" width="800" height="400"></canvas>
             <div class="info">
                 <div class="score">Score: <span id="score">0</span> &nbsp; High: <span id="highScore">0</span></div>
@@ -210,7 +259,6 @@
         </div>
     </div>
 
-    <script src="script.js"></script>
     <script>
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
@@ -640,5 +688,6 @@
             requestAnimationFrame(gameLoop);
         })();
     </script>
+    <script src="script.js"></script>
 </body>
 </html>
