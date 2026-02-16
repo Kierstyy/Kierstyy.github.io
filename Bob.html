@@ -241,7 +241,7 @@
             <h1>🏃 Bob's Adventure</h1>
             <canvas id="gameCanvas" width="800" height="400"></canvas>
             <div class="info">
-                <div class="score">Score: <span id="score">0</span></div>
+                <div class="score">Score: <span id="score">0</span> &nbsp; High: <span id="highScore">0</span></div>
                 <div class="controls">
                     <span id="controlText">SPACE to Jump | Tap to Jump</span>
                 </div>
@@ -293,6 +293,9 @@
             difficultyTimer: 0
         };
 
+        // High score
+        let highScore = 0;
+
         // Bob character
         let bob = {
             x: 100,
@@ -306,8 +309,8 @@
             frameTimer: 0,
             spriteWidth: 420,
             spriteHeight: 420,
-            displayWidth: 80,
-            displayHeight: 80
+            displayWidth: 120,
+            displayHeight: 120
         };
 
         // Images
@@ -359,8 +362,9 @@
                 this.scored = false;
             }
 
-            update() {
-                this.x -= gameState.gameSpeed;
+            update(delta) {
+                const timeScale = delta / 16.67;
+                this.x -= gameState.gameSpeed * timeScale;
             }
 
             draw() {
@@ -406,9 +410,10 @@
                 this.rotationAngle = 0;
             }
 
-            update() {
-                this.x -= gameState.gameSpeed;
-                this.rotationAngle += 0.05;
+            update(delta) {
+                const timeScale = delta / 16.67;
+                this.x -= gameState.gameSpeed * timeScale;
+                this.rotationAngle += 0.05 * timeScale;
             }
 
             draw() {
@@ -467,10 +472,11 @@
             }
         });
 
-        // Update Bob
-        function updateBob() {
-            bob.velocityY += GRAVITY;
-            bob.y += bob.velocityY;
+        // Update Bob (delta in ms)
+        function updateBob(delta) {
+            const timeScale = delta / 16.67;
+            bob.velocityY += GRAVITY * timeScale;
+            bob.y += bob.velocityY * timeScale;
 
             if (bob.y >= GROUND_LEVEL) {
                 bob.y = GROUND_LEVEL;
@@ -482,7 +488,7 @@
             }
 
             if (!bob.isJumping) {
-                bob.frameTimer++;
+                bob.frameTimer += timeScale;
                 if (bob.frameTimer > 8) {
                     bob.frameIndex = (bob.frameIndex + 1) % 2;
                     bob.frameTimer = 0;
@@ -536,9 +542,9 @@
         }
 
         // Update obstacles
-        function updateObstacles() {
+        function updateObstacles(delta) {
             for (let i = obstacles.length - 1; i >= 0; i--) {
-                obstacles[i].update();
+                obstacles[i].update(delta);
 
                 if (obstacles[i].collidesWith(bob)) {
                     endGame();
@@ -556,9 +562,9 @@
         }
 
         // Update coins
-        function updateCoins() {
+        function updateCoins(delta) {
             for (let i = coins.length - 1; i >= 0; i--) {
-                coins[i].update();
+                coins[i].update(delta);
 
                 if (coins[i].collidesWith(bob)) {
                     gameState.score += 50;
@@ -585,58 +591,73 @@
         // Update score display
         function updateScore() {
             document.getElementById('score').textContent = gameState.score;
+            document.getElementById('highScore').textContent = highScore;
         }
 
-        // Increase difficulty
-        function increaseDifficulty() {
-            gameState.difficultyTimer++;
-            if (gameState.difficultyTimer > 300) {
+        // Increase difficulty (delta in ms)
+        function increaseDifficulty(delta) {
+            difficultyTimerMs += delta;
+            if (difficultyTimerMs > 5000) {
                 gameState.gameSpeed += 0.5;
-                gameState.difficultyTimer = 0;
+                difficultyTimerMs = 0;
             }
         }
 
-        // Spawn management
-        let spawnTimer = 0;
-        let coinSpawnTimer = 0;
+        // Spawn management (timers in ms)
+        let spawnTimerMs = 0;
+        let coinSpawnTimerMs = 0;
+        let difficultyTimerMs = 0;
+        let lastTime = 0;
 
-        function manageSpawning() {
-            spawnTimer++;
-            coinSpawnTimer++;
+        function manageSpawning(delta) {
+            spawnTimerMs += delta;
+            coinSpawnTimerMs += delta;
 
-            const spawnRate = Math.max(80, 200 - gameState.gameSpeed * 10);
-            const coinSpawnRate = Math.max(150, 350 - gameState.gameSpeed * 20);
+            const spawnRateMs = Math.max(800, 2000 - gameState.gameSpeed * 100);
+            const coinSpawnRateMs = Math.max(1500, 3500 - gameState.gameSpeed * 200);
 
-            if (spawnTimer > spawnRate) {
+            if (spawnTimerMs > spawnRateMs) {
                 spawnObstacle();
-                spawnTimer = 0;
+                spawnTimerMs = 0;
             }
 
-            if (coinSpawnTimer > coinSpawnRate) {
+            if (coinSpawnTimerMs > coinSpawnRateMs) {
                 spawnCoin();
-                coinSpawnTimer = 0;
+                coinSpawnTimerMs = 0;
             }
         }
 
         // End game
         function endGame() {
+            if (gameState.score > highScore) {
+                highScore = gameState.score;
+                try {
+                    localStorage.setItem('bobHighScore', highScore);
+                } catch (e) {
+                    console.warn('Could not save high score', e);
+                }
+            }
             gameState.isRunning = false;
             document.getElementById('finalScore').textContent = gameState.score;
             document.getElementById('gameOverScreen').style.display = 'block';
         }
 
-        // Game loop
-        function gameLoop() {
+        // Game loop (timestamp provided by requestAnimationFrame)
+        function gameLoop(timestamp) {
+            if (!lastTime) lastTime = timestamp;
+            const delta = Math.min(40, timestamp - lastTime);
+            lastTime = timestamp;
+
             // Clear canvas
             ctx.fillStyle = 'white';
             ctx.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
 
             if (gameState.isRunning) {
-                updateBob();
-                updateObstacles();
-                updateCoins();
-                manageSpawning();
-                increaseDifficulty();
+                updateBob(delta);
+                updateObstacles(delta);
+                updateCoins(delta);
+                manageSpawning(delta);
+                increaseDifficulty(delta);
             }
 
             drawGround();
@@ -651,7 +672,15 @@
         // Initialize and start game
         (async () => {
             await loadImages();
-            gameLoop();
+            // load stored high score
+            try {
+                highScore = parseInt(localStorage.getItem('bobHighScore')) || 0;
+            } catch (e) {
+                highScore = 0;
+            }
+            const el = document.getElementById('highScore');
+            if (el) el.textContent = highScore;
+            requestAnimationFrame(gameLoop);
         })();
     </script>
 </body>
