@@ -30,6 +30,7 @@
             --font-body: 'Comic Sans MS', 'Comic Neue', cursive, sans-serif;
             --font-display: 'Chicken Pie', 'Fraunces', Georgia, serif;
             --max-width: 1120px;
+            --transition: 0.2s ease;
         }
 
         body {
@@ -101,6 +102,7 @@
             border: none;
             cursor: pointer;
             padding: 0.5rem;
+            z-index: 201;
         }
 
         .hamburger {
@@ -281,9 +283,6 @@
             <canvas id="gameCanvas" width="800" height="400"></canvas>
             <div class="info">
                 <div class="score">Score: <span id="score">0</span> &nbsp; High: <span id="highScore">0</span></div>
-                <div class="controls">
-                    <span id="controlText">SPACE to Jump | Tap to Jump</span>
-                </div>
             </div>
             <div class="game-over" id="gameOverScreen">
                 <h2>GAME OVER</h2>
