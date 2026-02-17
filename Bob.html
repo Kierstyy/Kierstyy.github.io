@@ -491,6 +491,9 @@
                     bob.velocityY = JUMP_STRENGTH;
                     bob.isJumping = true;
                     bob.isOnGround = false;
+                } else if (!gameState.isRunning) {
+                    // Restart game on spacebar when dead
+                    location.reload();
                 }
             }
         });
@@ -652,7 +655,7 @@
             spawnTimerMs += delta;
             coinSpawnTimerMs += delta;
 
-            const spawnRateMs = Math.max(800, 2000 - gameState.gameSpeed * 100);
+            const spawnRateMs = Math.min(3500, 1500 + gameState.gameSpeed * 80);
             const coinSpawnRateMs = Math.max(1500, 3500 - gameState.gameSpeed * 200);
 
             if (spawnTimerMs > spawnRateMs) {
